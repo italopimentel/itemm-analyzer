@@ -9,6 +9,26 @@ prop_next %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
     <link rel="stylesheet" href="{{url_for('static', filename="dash.css")}}">
+
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th, td {
+        border: 1px solid black;
+        text-align: center;
+        padding: 8px;
+      }
+      th {
+        background-color: #4CAF50;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+    </style>
+
 </head>
 <body>
     <nav class="navbar navbar-light bg-light p-3">
@@ -79,8 +99,40 @@ prop_next %}
                         <li class="breadcrumb-item active" aria-current="page">Overview</li>
                     </ol>
                 </nav>
-                <h1 class="h2">Cosumo</h1>
-                <p>Coloque os dados calculados aqui</p>
+                <h1 class="h2">Consumo</h1>
+                <p>Aqui estão os valores calculados a partir da planilha fornecida</p>
+                <table width="80%" border="1" cellspacing="5" cellpadding="10">
+                  <tr>
+                    <th>{{coluna1}}</th>
+                    <th>{{coluna2}}</th>
+                    <th>{{coluna3}}</th>
+                    <th>{{coluna4}}</th>
+                  </tr>
+                  <tr>
+                    <td>{{l11}}</td>
+                    <td>{{l12}}</td>
+                    <td>{{l13}}</td>
+                    <td>{{l14}}</td>
+                  </tr>
+                  <tr>
+                    <td>{{l21}}</td>
+                    <td>{{l22}}</td>
+                    <td>{{l23}}</td>
+                    <td>{{l24}}</td>
+                  </tr>
+                  <tr>
+                    <td>{{l31}}</td>
+                    <td>{{l32}}</td>
+                    <td>{{l33}}</td>
+                    <td>{{l34}}</td>
+                  </tr>
+                  <tr>
+                    <td>{{l41}}</td>
+                    <td>{{l42}}</td>
+                    <td>{{l43}}</td>
+                    <td>{{l44}}</td>
+                  </tr>
+                </table>
                 <footer class="pt-5 d-flex justify-content-between">
                     <span>Copyright © 2023 <a href="#">UFRPE</a> e <a href="#">ITEMM</a></span>
                     <ul class="nav m-0">

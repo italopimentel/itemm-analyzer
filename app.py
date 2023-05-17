@@ -11,6 +11,9 @@ from flask_security import (
 from database import db_session, init_db
 from models.auth import User, Role
 
+from Scripts.executeConsAgua import getDataframeValue
+data_Cons_Agua = getDataframeValue()
+
 # Create app
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -48,11 +51,19 @@ def polarizacao():
 def pekeurt():
     return render_template("pekeurt.html")
 
-
 @app.route("/consumo")
 @auth_required()
 def consumo():
-    return render_template("consumo.html")
+    data = data_Cons_Agua
+    keys = []
+    for key in data.keys():
+        keys.append(key)
+
+    return render_template("consumo.html", coluna1=data[keys[0]][0], coluna2=data[keys[0]][1], coluna3=data[keys[0]][2], coluna4=data[keys[0]][3],
+                           l11=data[keys[1]][0], l12=data[keys[1]][1], l13=data[keys[1]][2], l14=data[keys[1]][3],
+                           l21=data[keys[2]][0], l22=data[keys[2]][1], l23=data[keys[2]][2], l24=data[keys[2]][3],
+                           l31=data[keys[3]][0], l32=data[keys[3]][1], l33=data[keys[3]][2], l34=data[keys[3]][3],
+                           l41=data[keys[4]][0], l42=data[keys[4]][1], l43=data[keys[4]][2], l44=data[keys[4]][3])
 
 
 @app.route("/")
