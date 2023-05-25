@@ -59,6 +59,7 @@ def consumo():
     for key in data.keys():
         keys.append(key)
 
+    print(keys)
     return render_template("consumo.html", coluna1=data[keys[0]][0], coluna2=data[keys[0]][1], coluna3=data[keys[0]][2], coluna4=data[keys[0]][3],
                            l11=data[keys[1]][0], l12=data[keys[1]][1], l13=data[keys[1]][2], l14=data[keys[1]][3],
                            l21=data[keys[2]][0], l22=data[keys[2]][1], l23=data[keys[2]][2], l24=data[keys[2]][3],
