@@ -27,53 +27,8 @@ prop_next %}
       tr:nth-child(even) {
         background-color: #f2f2f2;
       }
-
-      body {
-        font-family: Arial, sans-serif;
-      }
-
-      .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-
-      form {
-        max-width: 400px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #f2f2f2;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
-      }
-
-      input[type="file"].botao-enviar {
-        margin-bottom: 10px;
-      }
-
-      .botao-enviar {
-        background-color: green;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        margin-top: 10px;
-        margin-left: auto;
-        display: block;
-      }
-
-      .botao-enviar:hover {
-        background-color: darkgreen;
-      }
     </style>
+
 </head>
 <body>
     <nav class="navbar navbar-light bg-light p-3">
@@ -145,12 +100,8 @@ prop_next %}
                     </ol>
                 </nav>
                 <h1 class="h2">Consumo</h1>
-                <p>Por favor envie as planilhas para que seja possível o cálculo do ensaio consumo de água 60°c</p>
-                  <form method="post" action="/consumo" enctype="multipart/form-data">
-                    <label for="arquivo">Selecione um arquivo:</label>
-                    <input type="file" id="arquivos" name="arquivos" accept="text/csv" multiple>
-                    <input type="submit" value="Enviar" class="botao-enviar">
-                  </form>
+                <p>Aqui estão os valores calculados a partir da planilha fornecida</p>
+                {{ table|safe }}
                 <footer class="pt-5 d-flex justify-content-between">
                     <span>Copyright © 2023 <a href="#">UFRPE</a> e <a href="#">ITEMM</a></span>
                     <ul class="nav m-0">

@@ -1,6 +1,7 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
+from flask import request
 from flask_security import (
     Security,
     current_user,
@@ -11,8 +12,11 @@ from flask_security import (
 from database import db_session, init_db
 from models.auth import User, Role
 
-from Scripts.executeConsAgua import getDataframeValue
-data_Cons_Agua = getDataframeValue()
+from Scripts.executeConsAgua import ResultadoDF
+
+from pandas import DataFrame
+from pandas import read_excel
+path = os.getcwd()
 
 # Create app
 app = Flask(__name__)
@@ -51,15 +55,76 @@ def polarizacao():
 def pekeurt():
     return render_template("pekeurt.html")
 
-@app.route("/consumo")
+@app.route("/consumo", methods=['GET'])
 @auth_required()
 def consumo():
-    data = data_Cons_Agua
-    keys = []
-    for key in data.keys():
-        keys.append(key)
     return render_template("consumo.html")
 
+objConsAgua = ResultadoDF()
+protValues = {}
+
+#metódo responsável por receber os envios de arquivo
+@app.route("/consumo", methods=['POST'])
+@auth_required()
+def consumo_post():
+    for planilha in os.listdir(path + "/Sheets/"):
+        os.remove(path + "/Sheets/" + planilha)
+
+    arquivos = request.files.getlist('arquivos')
+    for arquivo in arquivos:
+        arquivo.save(path + "/Sheets/" + arquivo.filename)
+    
+    protValues.clear()
+    return redirect("/consumo/results")
+
+@app.route("/consumo/results", methods=['GET'])
+@auth_required()
+def consumo_results_get():
+    global protValues
+    for plan_csv in os.listdir(path + '/Sheets/'):
+        if plan_csv.endswith('.csv') == True:
+            valuesExtracted = objConsAgua.calculateCP(plan_csv)
+            protValues[valuesExtracted[0]] = valuesExtracted[1]
+
+    protNames = protValues.keys()
+    return render_template("consumo_results.html", protNames=protNames)
+
+
+#recebe os dados enviados do formulário de sub listas
+@app.route("/consumo/results", methods=['POST'])
+@auth_required()
+def consumo_results_post():
+    form_data = request.form
+    valuesVector = []
+    for nome, value in form_data.items():
+        print(value)
+        valuesVector.append(float(value))
+
+    dictKeys = []
+    for key in form_data.keys():
+        nome = key.replace("P_F","")
+        nome = nome.replace("P_I","")
+        print(nome)
+        if nome not in dictKeys:
+            dictKeys.append(nome)
+    
+    print(dictKeys)
+    index = 0
+    for key in dictKeys:
+        objConsAgua.addToDataFrame(protName=key, pesoInicial=valuesVector[index], peso=valuesVector[index + 1], cpValue=protValues[key])
+        index += 2
+    
+    print (objConsAgua.getDataframeValue())
+    return redirect("/consumo/results/showresults")
+
+@app.route("/consumo/results/showresults", methods=['GET'])
+@auth_required()
+def consumo_show():
+    dataFramePandas = DataFrame(objConsAgua.getDataframeValue())
+    dataFramePandas.to_excel(path + '/Results/Resultados_Cons_Água.xlsx', index=False)
+    df = read_excel(path + '/Results/Resultados_Cons_Água.xlsx')
+    html_table = df.to_html()
+    return render_template('consumo_showresults.html', table=html_table)
 
 @app.route("/")
 @app.route("/home")

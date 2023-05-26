@@ -1,3 +1,4 @@
+
 Measurement ID;7609;Time Stamp;Step;Status;Prog Time;Step Time;Cycle;Cycle Level;Procedure;Voltage;Current;AhCha;AhDch;AhStep;AhAccu;WhAccu;WhCha;WhDch;WhStep;;;;;;;;;;;;
 Battery Name;Prototipo_P;[dd/MM/yyyy HH:mm:ss];[];[];[hh:mm:ss];[hh:mm:ss];[];[];[];[V];[A];[AhCha];[AhDch];[AhStep];[Ah];[Wh];[WhCha];[WhDch];[WhStep];;;;;;;;;;;;
 Battery Type;PROTOTIPO;18/11/2022 16:17:57;1;...;00:00:00;00:00:00;0;0;EQUALIZACAO_4X_C20;0;0;;;;;;;;;;18/11/2022 19:30:04;AhCha;1,035301;;;;;;;;
