@@ -125,7 +125,7 @@ def consumo_show():
     protNames = []
     for key in protValues.keys():
         protNames.append(key)
-        cpValues.append(protValues[key])
+        cpValues.append(protValues[key]) 
 
     return render_template('consumo_showresults.html', table=html_table, cpvalues=cpValues, protnames=protNames)
 
