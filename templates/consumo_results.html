@@ -28,6 +28,30 @@ prop_next %}
         background-color: #f2f2f2;
       }
 
+      ul {
+        list-style-type: none;
+      }
+
+    .expandir {
+        background-color: white;
+        border: none;
+        color: #333;
+        padding: 5px;
+        cursor: pointer;
+      }
+
+      .expandir::after {
+        content: '\25B6';
+        display: inline-block;
+        margin-right: 5px;
+        transform: rotate(0deg);
+        transition: transform 0.3s ease;
+      }
+
+      .expandir.expandido::after {
+        transform: rotate(90deg);
+      }
+
       .sublista {
       display: none;
       padding: 10px;
@@ -35,24 +59,11 @@ prop_next %}
       border: 1px solid #ddd;
       border-radius: 4px;
       margin-top: 10px;
-    }
-    .seta-botao {
-      cursor: pointer;
-      background-color: transparent;
-      border: none;
-      padding: 0;
-      transition: transform 0.3s ease;
-    }
-    .seta-botao:focus {
-      outline: none;
-    }
-    .seta-botao.rotacionada {
-      transform: rotate(90deg);
-    }
-    .sublista-nome {
-      font-weight: bold;
-      margin-left: 10px;
-    }
+      }
+
+      .sublista.expandido {
+        display: block;
+      }
 
       input[type="file"].botao-enviar {
         margin-bottom: 10px;
@@ -156,8 +167,7 @@ prop_next %}
                   <ul>
                     {% for nome in protNames %}
                       <li>
-                        <button type="button" class="seta-botao" onclick="toggleSublista(this)">
-                          <span>&#9658;</span>
+                        <button type="button" class="expandir" onclick="toggleSublista(this)">
                         </button>
                         <span class="sublista-nome">{{ nome }}</span>
                         <ul class="sublista">
@@ -197,9 +207,13 @@ prop_next %}
     <script>
       function toggleSublista(botao) {
       var sublista = botao.parentNode.querySelector('.sublista');
-      var setaBotao = botao.querySelector("span");
-      sublista.style.display = (sublista.style.display === "none") ? "block" : "none";
-      setaBotao.classList.toggle("rotacionada");
+      if (sublista.style.display === "none") {
+          sublista.style.display = "block";
+          botao.classList.add("expandido");
+        } else {
+          sublista.style.display = "none";
+          botao.classList.remove("expandido");
+        }
     }
     </script>
 </body>

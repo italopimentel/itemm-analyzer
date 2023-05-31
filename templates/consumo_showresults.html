@@ -27,6 +27,39 @@ prop_next %}
       tr:nth-child(even) {
         background-color: #f2f2f2;
       }
+
+      ul {
+        list-style-type: none;
+      }
+
+      .expandir {
+        background-color: white;
+        border: none;
+        color: #333;
+        padding: 5px;
+        cursor: pointer;
+      }
+
+      .expandir::after {
+        content: '\25B6';
+        display: inline-block;
+        margin-right: 5px;
+        transform: rotate(0deg);
+        transition: transform 0.3s ease;
+      }
+
+      .expandir.expandido::after {
+        transform: rotate(90deg);
+      }
+
+      .sublista {
+        display: none;
+      }
+      
+      .sublista.expandido {
+        display: block;
+      }
+
     </style>
 
 </head>
@@ -101,7 +134,48 @@ prop_next %}
                 </nav>
                 <h1 class="h2">Consumo</h1>
                 <p>Aqui estão os valores calculados a partir da planilha fornecida</p>
-                {{ table|safe }}
+                <ul>
+                  <li>
+                    <button onclick="toggleSublista('Tabela')" class="expandir"></button>
+                    Tabela consumo de água 60°C
+                    <ul id="sublistaTabela" class="sublista">
+                      <li>{{table|safe}}</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <button class="expandir" onclick="toggleSublista('Dados')"></button>
+                    Dados Relevantes
+                    <ul id="sublistaDados" class="sublista">
+                      <li>
+                        <button class="expandir" onclick="toggleSublista('Cp')"></button>
+                        Capacidade Nominal
+                        <ul id="sublistaCp" class="sublista">
+                            <li>
+                              <div id="resultadoCp"></div>
+                            </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <button class="expandir" onclick="toggleSublista('G_comparacao')"></button>
+                    Gráfico de comparação
+                    <ul id="sublistaG_comparacao" class="sublista">
+                      <li>
+                        <p> Mostra os dados</p> 
+                      </li>
+                    </ul>
+                  </li>
+                <li>
+                  <button class="expandir" onclick="toggleSublista('G_erro')"></button>
+                  Gráfico de desvio padrão/erro
+                  <ul id="sublistaG_erro" class="sublista">
+                    <li>
+                      <p> Mostra os dados</p> 
+                    </li>
+                  </ul>
+                </li>
+              </ul>
                 <footer class="pt-5 d-flex justify-content-between">
                     <span>Copyright © 2023 <a href="#">UFRPE</a> e <a href="#">ITEMM</a></span>
                     <ul class="nav m-0">
@@ -134,6 +208,37 @@ prop_next %}
             low: 0,
             showArea: true
         });
+    </script>
+    <script>
+      function toggleSublista(nome) {
+        var sublista = document.getElementById("sublista" + nome);
+        var botao = document.getElementById("botao" + nome);
+        if (sublista.style.display === "none") {
+          sublista.style.display = "block";
+          botao.classList.add("expandido");
+        } else {
+          sublista.style.display = "none";
+          botao.classList.remove("expandido");
+        }
+      }
+    </script>
+    <script>
+      var arrayNomes = {{protnames|tojson}};
+      var arrayValores = {{cpvalues|tojson}};
+
+      function retornarCp()
+      {
+        var resultado = '';
+        var tamanho = arrayNomes.length;
+
+        // Loop para percorrer os arrays
+        for (var i = 0; i < tamanho; i++) {
+          resultado += arrayNomes[i] + ' : ' + arrayValores[i] + '<br />' + '\n';
+        }
+        // Exibir o resultado na página
+        document.getElementById('resultadoCp').innerHTML = resultado;
+      }
+      retornarCp();
     </script>
 </body>
 </html>

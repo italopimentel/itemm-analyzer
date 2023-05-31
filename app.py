@@ -97,24 +97,20 @@ def consumo_results_post():
     form_data = request.form
     valuesVector = []
     for nome, value in form_data.items():
-        print(value)
         valuesVector.append(float(value))
 
     dictKeys = []
     for key in form_data.keys():
         nome = key.replace("P_F","")
         nome = nome.replace("P_I","")
-        print(nome)
         if nome not in dictKeys:
             dictKeys.append(nome)
     
-    print(dictKeys)
     index = 0
     for key in dictKeys:
         objConsAgua.addToDataFrame(protName=key, pesoInicial=valuesVector[index], peso=valuesVector[index + 1], cpValue=protValues[key])
         index += 2
-    
-    print (objConsAgua.getDataframeValue())
+
     return redirect("/consumo/results/showresults")
 
 @app.route("/consumo/results/showresults", methods=['GET'])
@@ -124,7 +120,14 @@ def consumo_show():
     dataFramePandas.to_excel(path + '/Results/Resultados_Cons_Água.xlsx', index=False)
     df = read_excel(path + '/Results/Resultados_Cons_Água.xlsx')
     html_table = df.to_html()
-    return render_template('consumo_showresults.html', table=html_table)
+
+    cpValues = []
+    protNames = []
+    for key in protValues.keys():
+        protNames.append(key)
+        cpValues.append(protValues[key])
+
+    return render_template('consumo_showresults.html', table=html_table, cpvalues=cpValues, protnames=protNames)
 
 @app.route("/")
 @app.route("/home")
