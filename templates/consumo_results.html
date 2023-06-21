@@ -28,29 +28,41 @@ prop_next %}
         background-color: #f2f2f2;
       }
 
-      body {
-        font-family: Arial, sans-serif;
+      ul {
+        list-style-type: none;
       }
 
-      .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+    .expandir {
+        background-color: white;
+        border: none;
+        color: #333;
+        padding: 5px;
+        cursor: pointer;
       }
 
-      form {
-        max-width: 400px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #f2f2f2;
+      .expandir::after {
+        content: '\25B6';
+        display: inline-block;
+        margin-right: 5px;
+        transform: rotate(0deg);
+        transition: transform 0.3s ease;
       }
 
-      label {
+      .expandir.expandido::after {
+        transform: rotate(90deg);
+      }
+
+      .sublista {
+      display: none;
+      padding: 10px;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 10px;
+      }
+
+      .sublista.expandido {
         display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
       }
 
       input[type="file"].botao-enviar {
@@ -73,7 +85,9 @@ prop_next %}
       .botao-enviar:hover {
         background-color: darkgreen;
       }
+
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-light bg-light p-3">
@@ -135,6 +149,9 @@ prop_next %}
                           </a>
                         </li>
                       </ul>
+                      <form >
+                        <input type="submit" value="Enviar">
+                      </form>
                 </div>
             </nav>
             <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
@@ -145,25 +162,28 @@ prop_next %}
                     </ol>
                 </nav>
                 <h1 class="h2">Consumo</h1>
-                <p>Por favor envie as planilhas para que seja possível o cálculo do ensaio consumo de água 60°c</p>
-                  <form method="post" action="/consumo" enctype="multipart/form-data">
-                    <label for="arquivo">Selecione um arquivo:</label>
-                    <input type="file" id="arquivos" name="arquivos" accept="text/csv" multiple>
-                    <input type="submit" value="Enviar" class="botao-enviar">
-                  </form>
-                <footer class="pt-5 d-flex justify-content-between">
-                    <span>Copyright © 2023 <a href="#">UFRPE</a> e <a href="#">ITEMM</a></span>
-                    <ul class="nav m-0">
-                        <li class="nav-item">
-                          <a class="nav-link text-secondary" aria-current="page" href="#">Privacy Policy</a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link text-secondary" href="#">Terms and conditions</a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link text-secondary" href="#">Contact</a>
-                        </li>
-                      </ul>
+                <p>Insira os valores solicitados para continuar</p>
+                <form id="formSublistas" action="/consumo/results" method="POST">
+                  <ul>
+                    {% for nome in protNames %}
+                      <li>
+                        <button type="button" class="expandir" onclick="toggleSublista(this)">
+                        </button>
+                        <span class="sublista-nome">{{ nome }}</span>
+                        <ul class="sublista">
+                          <li>
+                            <label for="pesoInicial (g)">Peso Inicial (g):</label>
+                            <input type="number" id="P_I{{ nome }}" name="P_I{{ nome }}" step="any" required="required">
+                            <label for="pesoFinal (g)">Peso Final (g):</label>
+                            <input type="number" id="P_F{{ nome }}" name="P_F{{ nome }}" step="any" required="required">
+                          </li>
+                        </ul>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                  <input type="submit" value="Enviar" class="botao-enviar"></button>
+                </form>
+
                 </footer>
             </main>
         </div>
@@ -183,6 +203,18 @@ prop_next %}
             low: 0,
             showArea: true
         });
+    </script>
+    <script>
+      function toggleSublista(botao) {
+      var sublista = botao.parentNode.querySelector('.sublista');
+      if (sublista.style.display === "none") {
+          sublista.style.display = "block";
+          botao.classList.add("expandido");
+        } else {
+          sublista.style.display = "none";
+          botao.classList.remove("expandido");
+        }
+    }
     </script>
 </body>
 </html>

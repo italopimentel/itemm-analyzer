@@ -28,52 +28,40 @@ prop_next %}
         background-color: #f2f2f2;
       }
 
-      body {
-        font-family: Arial, sans-serif;
+      ul {
+        list-style-type: none;
       }
 
-      .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-
-      form {
-        max-width: 400px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #f2f2f2;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
-      }
-
-      input[type="file"].botao-enviar {
-        margin-bottom: 10px;
-      }
-
-      .botao-enviar {
-        background-color: green;
-        color: white;
-        padding: 10px 20px;
+      .expandir {
+        background-color: white;
         border: none;
-        border-radius: 4px;
+        color: #333;
+        padding: 5px;
         cursor: pointer;
-        font-weight: bold;
-        margin-top: 10px;
-        margin-left: auto;
+      }
+
+      .expandir::after {
+        content: '\25B6';
+        display: inline-block;
+        margin-right: 5px;
+        transform: rotate(0deg);
+        transition: transform 0.3s ease;
+      }
+
+      .expandir.expandido::after {
+        transform: rotate(90deg);
+      }
+
+      .sublista {
+        display: none;
+      }
+      
+      .sublista.expandido {
         display: block;
       }
 
-      .botao-enviar:hover {
-        background-color: darkgreen;
-      }
     </style>
+
 </head>
 <body>
     <nav class="navbar navbar-light bg-light p-3">
@@ -145,12 +133,49 @@ prop_next %}
                     </ol>
                 </nav>
                 <h1 class="h2">Consumo</h1>
-                <p>Por favor envie as planilhas para que seja possível o cálculo do ensaio consumo de água 60°c</p>
-                  <form method="post" action="/consumo" enctype="multipart/form-data">
-                    <label for="arquivo">Selecione um arquivo:</label>
-                    <input type="file" id="arquivos" name="arquivos" accept="text/csv" multiple>
-                    <input type="submit" value="Enviar" class="botao-enviar">
-                  </form>
+                <p>Aqui estão os valores calculados a partir da planilha fornecida</p>
+                <ul>
+                  <li>
+                    <button onclick="toggleSublista('Tabela')" class="expandir"></button>
+                    Tabela consumo de água 60°C
+                    <ul id="sublistaTabela" class="sublista">
+                      <li>{{table|safe}}</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <button class="expandir" onclick="toggleSublista('Dados')"></button>
+                    Dados Relevantes
+                    <ul id="sublistaDados" class="sublista">
+                      <li>
+                        <button class="expandir" onclick="toggleSublista('Cp')"></button>
+                        Capacidade Nominal
+                        <ul id="sublistaCp" class="sublista">
+                            <li>
+                              <div id="resultadoCp"></div>
+                            </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <button class="expandir" onclick="toggleSublista('G_comparacao')"></button>
+                    Gráfico de comparação
+                    <ul id="sublistaG_comparacao" class="sublista">
+                      <li>
+                        <p> Mostra os dados</p> 
+                      </li>
+                    </ul>
+                  </li>
+                <li>
+                  <button class="expandir" onclick="toggleSublista('G_erro')"></button>
+                  Gráfico de desvio padrão/erro
+                  <ul id="sublistaG_erro" class="sublista">
+                    <li>
+                      <p> Mostra os dados</p> 
+                    </li>
+                  </ul>
+                </li>
+              </ul>
                 <footer class="pt-5 d-flex justify-content-between">
                     <span>Copyright © 2023 <a href="#">UFRPE</a> e <a href="#">ITEMM</a></span>
                     <ul class="nav m-0">
@@ -183,6 +208,37 @@ prop_next %}
             low: 0,
             showArea: true
         });
+    </script>
+    <script>
+      function toggleSublista(nome) {
+        var sublista = document.getElementById("sublista" + nome);
+        var botao = document.getElementById("botao" + nome);
+        if (sublista.style.display === "none") {
+          sublista.style.display = "block";
+          botao.classList.add("expandido");
+        } else {
+          sublista.style.display = "none";
+          botao.classList.remove("expandido");
+        }
+      }
+    </script>
+    <script>
+      var arrayNomes = {{protnames|tojson}};
+      var arrayValores = {{cpvalues|tojson}};
+
+      function retornarCp()
+      {
+        var resultado = '';
+        var tamanho = arrayNomes.length;
+
+        // Loop para percorrer os arrays
+        for (var i = 0; i < tamanho; i++) {
+          resultado += arrayNomes[i] + ' : ' + arrayValores[i] + '<br />' + '\n';
+        }
+        // Exibir o resultado na página
+        document.getElementById('resultadoCp').innerHTML = resultado;
+      }
+      retornarCp();
     </script>
 </body>
 </html>
