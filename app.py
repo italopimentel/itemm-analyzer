@@ -128,7 +128,6 @@ def dac():
 def polarizacao():
     return render_template("polarizacao.html")
 
-
 @app.route("/pekeurt")
 @auth_required()
 def pekeurt():
@@ -187,9 +186,17 @@ def consumo_results_post():
             dictKeys.append(nome)
     
     index = 0
+    nomeProt = []
+    valuesProt = []
+
     for key in dictKeys:
         objConsAgua.addToDataFrame(protName=key, pesoInicial=valuesVector[index], peso=valuesVector[index + 1], cpValue=protValues[key])
+        nomeProt.append(key)
+        valuesProt.append(round(((valuesVector[index] - valuesVector[index + 1])/float(protValues[key]))*1000,3))
         index += 2
+
+    from Scripts.generateGraph import generateComparationGraph
+    generateComparationGraph(valuesProt, nomeProt)
 
     return redirect("/consumo/results/showresults")
 
