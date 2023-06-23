@@ -23,7 +23,7 @@ from pandas import read_excel
 path = os.getcwd()
 
 # Create app
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config["DEBUG"] = True
 
 app.config["UPLOAD_FOLDER"] = "uploads"
@@ -168,7 +168,7 @@ def consumo_results_get():
     protNames = protValues.keys()
     return render_template("consumo_results.html", protNames=protNames)
 
-
+protStatistic = {}
 #recebe os dados enviados do formulário de sub listas
 @app.route("/consumo/results", methods=['POST'])
 @auth_required()
@@ -195,14 +195,19 @@ def consumo_results_post():
         valuesProt.append(round(((valuesVector[index] - valuesVector[index + 1])/float(protValues[key]))*1000,3))
         index += 2
 
-    from Scripts.generateGraph import generateComparationGraph
+    global protStatistic
+    from Scripts.generateGraph import generateComparationGraph, generateErrorGraph
+    
     generateComparationGraph(valuesProt, nomeProt)
-
+    media, variancia = generateErrorGraph(valuesProt)
+    protStatistic['media'] = media
+    protStatistic['var'] = variancia
     return redirect("/consumo/results/showresults")
 
 @app.route("/consumo/results/showresults", methods=['GET'])
 @auth_required()
 def consumo_show():
+    global protStatistic
     dataFramePandas = DataFrame(objConsAgua.getDataframeValue())
     dataFramePandas.to_excel(path + '/Results/Resultados_Cons_Água.xlsx', index=False)
     df = read_excel(path + '/Results/Resultados_Cons_Água.xlsx')
@@ -214,7 +219,7 @@ def consumo_show():
         protNames.append(key)
         cpValues.append(protValues[key]) 
 
-    return render_template('consumo_showresults.html', table=html_table, cpvalues=cpValues, protnames=protNames)
+    return render_template('consumo_showresults.html', table=html_table, cpvalues=cpValues, protnames=protNames, media=protStatistic["media"], var=protStatistic["var"])
 
 
 @app.route("/success")

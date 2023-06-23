@@ -6,7 +6,7 @@ def generateComparationGraph (protValues, protNames):
     import numpy as np
     import os
 
-    path = os.getcwd() + '/Results/plot_comparacao.png'
+    path = os.getcwd() + '/static/plot_comparacao.png'
 
     bars_width = 0.5
     pos_bars = range(len(protValues))
@@ -24,3 +24,27 @@ def generateComparationGraph (protValues, protNames):
         plt.text(i, valor + 0.05, str(valor), ha='center')
 
     plt.savefig(path)
+    plt.cla()
+    plt.clf()
+
+def generateErrorGraph(protValues):
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import os
+
+    arrayResults = np.array(protValues)
+    media = np.mean(arrayResults)
+    variancia = np.var(arrayResults)
+    path = os.getcwd() + '/static/plot_erro.png'
+
+    ytick = np.arange(min(protValues) - 0.02, max(protValues) + 0.02, 0.05)
+    plt.boxplot(arrayResults, patch_artist=True, boxprops={'facecolor': 'green'}, medianprops={'color': 'blue'})
+    plt.title('Gráfico de vela WC')
+    plt.ylabel('Valores WC')
+    plt.yticks(ytick)
+    plt.savefig(path)
+
+    plt.cla()
+    plt.clf()
+
+    return media, variancia

@@ -155,6 +155,16 @@ prop_next %}
                             </li>
                         </ul>
                       </li>
+                      <li>
+                        <button class="expandir" onclick="toggleSublista('Values')"></button>
+                        Dados WC 21d
+                        <ul id="sublistaValues" class="sublista">
+                            <li>
+                              média: {{media}}<br>
+                              variância: {{var}}
+                            </li>
+                        </ul>
+                      </li>
                     </ul>
                   </li>
                   <li>
@@ -162,16 +172,16 @@ prop_next %}
                     Gráfico de comparação
                     <ul id="sublistaG_comparacao" class="sublista">
                       <li>
-                        <img src="/Results/plot_comparacao.png">
+                        <img src="/static/plot_comparacao.png">
                       </li>
                     </ul>
                   </li>
                 <li>
                   <button class="expandir" onclick="toggleSublista('G_erro')"></button>
-                  Gráfico de desvio padrão/erro
+                  Gráfico de vela
                   <ul id="sublistaG_erro" class="sublista">
                     <li>
-                      <p> Mostra os dados</p> 
+                      <img src="/static/plot_erro.png">
                     </li>
                   </ul>
                 </li>
